@@ -2,41 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Nightlight Data</title>
-  <style>
-    .available { color: green; font-weight: bold; }
-    .loading { color: gray; }
-  </style>
+  <title>Nightlight Data Calendar</title>
 </head>
 <body>
-  <h2>Available Data</h2>
-  <button onclick="refreshData()">🔄 Refresh Data</button>
-  <ul id="dataList"><li class="loading">Loading...</li></ul>
+  <h2>Available Nighttime Light Data</h2>
+  <button onclick="refreshData()">🔄 Refresh Calendar</button>
+  <div id="calendar">Loading...</div>
 
   <script>
-    const endpoint = "https://script.google.com/macros/s/AKfycby--StEdKdt4Q2VaFNig_lpmxdxM0IfD3uiUsUj6T-nJcZe78UPrmxY9u0_mc7_KXioXQ/exec";
+    const endpoint = "https://script.google.com/macros/s/AKfycbwUFbFdGB-UgT-P2t-CHz_GRxfvPfZqbIIu_4rorpwTFdNlBm7yDaocAzmY0E38Is2k0Q/exec";
 
     async function refreshData() {
-      const list = document.getElementById("dataList");
-      list.innerHTML = "<li class='loading'>Fetching updated data...</li>";
+      const div = document.getElementById("calendar");
+      div.innerHTML = "Loading updated calendar...";
 
       try {
         const res = await fetch(endpoint);
-        const months = await res.json();
-
-        list.innerHTML = "";
-        months.forEach(month => {
-          const li = document.createElement("li");
-          li.textContent = month;
-          li.className = "available";
-          list.appendChild(li);
-        });
+        const html = await res.text();
+        div.innerHTML = html;
       } catch (err) {
-        list.innerHTML = "<li class='loading'>Failed to fetch data.</li>";
+        div.innerHTML = "⚠️ Failed to load calendar.";
       }
     }
 
-    // Load on page start
+    // Load on page load
     refreshData();
   </script>
 </body>
