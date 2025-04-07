@@ -2,21 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Available Nighttime Light Data</title>
+  <title>Nightlight Data</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2em; background: #f9f9f9; }
-    h2 { color: #333; }
-    ul { list-style: none; padding-left: 0; }
-    li { margin: 5px 0; font-size: 16px; }
+    .available { color: green; font-weight: bold; }
+    .loading { color: gray; }
   </style>
 </head>
 <body>
-  <h2>Available data:</h2>
-  <ul>
-    <li>201204</li>
-    <li>201205</li>
-    <li>201206</li>
-    ...
-  </ul>
+  <h2>Available Data</h2>
+  <button onclick="refreshData()">🔄 Refresh Data</button>
+  <ul id="dataList"><li class="loading">Loading...</li></ul>
+
+  <script>
+    const endpoint = "https://script.google.com/macros/s/AKfycby--StEdKdt4Q2VaFNig_lpmxdxM0IfD3uiUsUj6T-nJcZe78UPrmxY9u0_mc7_KXioXQ/exec";
+
+    async function refreshData() {
+      const list = document.getElementById("dataList");
+      list.innerHTML = "<li class='loading'>Fetching updated data...</li>";
+
+      try {
+        const res = await fetch(endpoint);
+        const months = await res.json();
+
+        list.innerHTML = "";
+        months.forEach(month => {
+          const li = document.createElement("li");
+          li.textContent = month;
+          li.className = "available";
+          list.appendChild(li);
+        });
+      } catch (err) {
+        list.innerHTML = "<li class='loading'>Failed to fetch data.</li>";
+      }
+    }
+
+    // Load on page start
+    refreshData();
+  </script>
 </body>
 </html>
